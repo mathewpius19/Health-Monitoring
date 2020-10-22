@@ -42,7 +42,7 @@ def display():
     servername=object["Servername"]
     OldDetails=object["Details"]
     conn=sqlite3.connect("Health.db")
-    health_dict={'message':'Generating Health Report','Health_id':[],'Epoch_Time':[],'Disk_Free':[],'Bytes_Sent':[],'Bytes_Received':[],'Packets_Sent':[],'Packets_Received':[],'Memory_Free':[],'CPU_Usage_Percent':[],'CPU_Time':[]} 
+    health_dict={'message':'Generating Health Report','Health_id':[],'Epoch_Time':[],'Disk_Free':[],'Memory_Free':[],'CPU_Usage_Percent':[],'CPU_Time':[]} 
     try:
         details=OldDetails.replace(" ","").lower()
         health_dict['message']="Generating Health Report"
@@ -57,9 +57,9 @@ def display():
             health_dict['Health_id'].append(row[0])
             health_dict['Epoch_Time'].append(row[1])
             health_dict['Disk_Free'].append(row[2])
-            health_dict['Memory_Free'].append(row[7])
-            health_dict['CPU_Usage_Percent'].append(row[8])
-            health_dict['CPU_Time'].append(row[9])  
+            health_dict['Memory_Free'].append(row[3])
+            health_dict['CPU_Usage_Percent'].append(row[4])
+            health_dict['CPU_Time'].append(row[5])  
     except Exception as e:
         return {"Error":str(e)}       
     finally:
