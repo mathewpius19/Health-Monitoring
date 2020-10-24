@@ -46,6 +46,4 @@ if __name__=='__main__':
         report = get_health()
         print("Done generating report. Sending report to flask emitting server.")
         r1 = requests.post(flask_URL, json=report)
-        print("Sending data to node....")
-        r2 = requests.post(node_URL, json=report)
         time.sleep(10)
