@@ -23,6 +23,7 @@ def report():
     
     try:
         conn.execute(f"create table if not exists {username}_{server_name} (HEALTH_ID integer primary key AUTOINCREMENT,Time_Epoch integer,Disk_Free varchar(80),Memory_Free varchar(80),Cpu_Usage_Percent varchar(80),Cpu_Time varchar(80));")
+        
         conn.execute(f'insert into {username}_{server_name} (Time_Epoch,Disk_Free,Memory_Free,Cpu_Usage_Percent,Cpu_Time) values {time_epoch,disk_free,memory_free,cpu_percent,cpu_total}')
         return response_message
     except:
@@ -42,10 +43,9 @@ def display():
     servername=object["Servername"]
     OldDetails=object["Details"]
     conn=sqlite3.connect("Health.db")
-    health_dict={'message':'Generating Health Report','Health_id':[],'Epoch_Time':[],'Disk_Free':[],'Memory_Free':[],'CPU_Usage_Percent':[],'CPU_Time':[]} 
+    health_dict={'Health_id':[],'Epoch_Time':[],'Disk_Free':[],'Memory_Free':[],'CPU_Usage_Percent':[],'CPU_Time':[]} 
     try:
         details=OldDetails.replace(" ","").lower()
-        health_dict['message']="Generating Health Report"
         cur=conn.cursor()
         if details=='all':
             cur.execute(f" select * from {username}_{servername} order by HEALTH_ID")
