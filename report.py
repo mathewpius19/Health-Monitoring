@@ -29,7 +29,8 @@ def get_health():
     epochTime = time.time()
     cpuTotal = (ctime.user + ctime.system)
     virtualMemory = psutil.virtual_memory() 
-    memoryFree = (virtualMemory.free /virtualMemory.total)*100   
+    memoryFree = (virtualMemory.free /virtualMemory.total)*100
+    bytesRead = psutil.disk_io_counters()   
 
     # The keys in this dict should match the db cols
     report = dict (
@@ -40,6 +41,7 @@ def get_health():
         cpu_total = round(cpuTotal,2),
         free_Percnt = round(freePercnt,2),
         memory_Free = round(memoryFree,2),
+        bytes_read = bytesRead.read_bytes
         )
 
     return report

@@ -18,13 +18,14 @@ def report():
     memory_free=incoming_report["memory_Free"]
     cpu_percent=incoming_report["cpupercent"]
     cpu_total=incoming_report["cpu_total"]
+    bytes_read = incoming_report["bytes_read"]
     conn=sqlite3.connect("Health.db")
     response_message={"message":"Generating Health Report"}
     
     try:
-        conn.execute(f"create table if not exists {username}_{server_name} (HEALTH_ID integer primary key AUTOINCREMENT,Time_Epoch float,Disk_Free float,Memory_Free float,Cpu_Usage_Percent float,Cpu_Time float);")
+        conn.execute(f"create table if not exists {username}_{server_name} (HEALTH_ID integer primary key AUTOINCREMENT,Time_Epoch float,Disk_Free float,Memory_Free float,Cpu_Usage_Percent float,Cpu_Time float,Bytes_Read float);")
         
-        conn.execute(f'insert into {username}_{server_name} (Time_Epoch,Disk_Free,Memory_Free,Cpu_Usage_Percent,Cpu_Time) values {time_epoch,disk_free,memory_free,cpu_percent,cpu_total}')
+        conn.execute(f'insert into {username}_{server_name} (Time_Epoch,Disk_Free,Memory_Free,Cpu_Usage_Percent,Cpu_Time,Bytes_Read) values {time_epoch,disk_free,memory_free,cpu_percent,cpu_total, bytes_read}')
         return response_message
     except:
         return "Generation Failed"
@@ -43,7 +44,7 @@ def display():
     servername=object["Servername"]
     OldDetails=object["Details"]
     conn=sqlite3.connect("Health.db")
-    health_dict={'Health_id':[],'Epoch_Time':[],'Disk_Free':[],'Memory_Free':[],'CPU_Usage_Percent':[],'CPU_Time':[]} 
+    health_dict={'Health_id':[],'Epoch_Time':[],'Disk_Free':[],'Memory_Free':[],'CPU_Usage_Percent':[],'CPU_Time':[], "Bytes_Read":[]} 
     try:
         details=OldDetails.replace(" ","").lower()
         cur=conn.cursor()
@@ -59,7 +60,8 @@ def display():
             health_dict['Disk_Free'].append(row[2])
             health_dict['Memory_Free'].append(row[3])
             health_dict['CPU_Usage_Percent'].append(row[4])
-            health_dict['CPU_Time'].append(row[5])  
+            health_dict['CPU_Time'].append(row[5]) 
+            health_dict["Bytes_Read"].append(row[6]) 
     except Exception as e:
         return {"Error":str(e)}       
     finally:
