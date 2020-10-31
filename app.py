@@ -22,7 +22,7 @@ def report():
     response_message={"message":"Generating Health Report"}
     
     try:
-        conn.execute(f"create table if not exists {username}_{server_name} (HEALTH_ID integer primary key AUTOINCREMENT,Time_Epoch integer,Disk_Free varchar(80),Memory_Free varchar(80),Cpu_Usage_Percent varchar(80),Cpu_Time varchar(80));")
+        conn.execute(f"create table if not exists {username}_{server_name} (HEALTH_ID integer primary key AUTOINCREMENT,Time_Epoch float,Disk_Free float,Memory_Free float,Cpu_Usage_Percent float,Cpu_Time float);")
         
         conn.execute(f'insert into {username}_{server_name} (Time_Epoch,Disk_Free,Memory_Free,Cpu_Usage_Percent,Cpu_Time) values {time_epoch,disk_free,memory_free,cpu_percent,cpu_total}')
         return response_message

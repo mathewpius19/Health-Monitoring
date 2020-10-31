@@ -22,20 +22,24 @@ def get_health():
     print('generating health report')
 
     cpu_percent = psutil.cpu_percent(interval=2.0)
-    ctime = psutil.cpu_times()
+    
     disk_usage = psutil.disk_usage("/")
-    net_io_counters = psutil.net_io_counters()
-    virtual_memory = psutil.virtual_memory()    
+    freePercnt=((disk_usage.free/disk_usage.total)*100)
+    ctime = psutil.cpu_times()
+    epochTime = time.time()
+    cpuTotal = (ctime.user + ctime.system)
+    virtualMemory = psutil.virtual_memory() 
+    memoryFree = (virtualMemory.free /virtualMemory.total)*100   
 
     # The keys in this dict should match the db cols
     report = dict (
         USER_NAME=USER_NAME,
         SERVER_NAME=SERVER_NAME,
-        epoch_time=time.time(),
+        epoch_time = round(epochTime,2),
         cpupercent = cpu_percent,
-        cpu_total = ctime.user + ctime.system,
-        free_Percnt=(disk_usage.percent),
-        memory_Free = virtual_memory.free,
+        cpu_total = round(cpuTotal,2),
+        free_Percnt = round(freePercnt,2),
+        memory_Free = round(memoryFree,2),
         )
 
     return report
@@ -47,3 +51,4 @@ if __name__=='__main__':
         print("Done generating report. Sending report to flask emitting server.")
         r1 = requests.post(flask_URL, json=report)
         time.sleep(10)
+        # print(report)
