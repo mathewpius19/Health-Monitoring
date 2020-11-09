@@ -6,7 +6,6 @@ import sys
 PORT = 4400
 
 flask_URL = f'http://localhost:{PORT}/report'
-node_URL = "http://localhost:5555/health/gethealthdata"
 
 try:
     SERVER_NAME=sys.argv[1]
