@@ -14,18 +14,17 @@ def report():
     username=incoming_report["USER_NAME"]
     time_epoch=incoming_report["epoch_time"]
     server_name=incoming_report["SERVER_NAME"]
-    disk_free=incoming_report["free_Percnt"]
-    memory_free=incoming_report["memory_Free"]
-    cpu_percent=incoming_report["cpupercent"]
-    cpu_total=incoming_report["cpu_total"]
+    bytes_write=incoming_report["bytes_write"]
+    bytes_sent=incoming_report["bytes_sent"]
+    bytes_recv=incoming_report["bytes_recv"]
     bytes_read = incoming_report["bytes_read"]
     conn=sqlite3.connect("Health.db")
     response_message={"message":"Generating Health Report"}
     
     try:
-        conn.execute(f"create table if not exists {username}_{server_name} (HEALTH_ID integer primary key AUTOINCREMENT,Time_Epoch float,Disk_Free float,Memory_Free float,Cpu_Usage_Percent float,Cpu_Time float,Bytes_Read float);")
+        conn.execute(f"create table if not exists {username}_{server_name} (HEALTH_ID integer primary key AUTOINCREMENT,Time_Epoch float,Bytes_Write float,Bytes_Sent float, Bytes_Recv float,Bytes_Read float);")
         
-        conn.execute(f'insert into {username}_{server_name} (Time_Epoch,Disk_Free,Memory_Free,Cpu_Usage_Percent,Cpu_Time,Bytes_Read) values {time_epoch,disk_free,memory_free,cpu_percent,cpu_total, bytes_read}')
+        conn.execute(f'insert into {username}_{server_name} (Time_Epoch,Bytes_Write,Bytes_Sent,Bytes_Recv,Bytes_Read) values {time_epoch,bytes_write,bytes_sent,bytes_recv, bytes_read}')
         return response_message
     except:
         return "Generation Failed"
@@ -42,26 +41,19 @@ def display():
     object=request.json
     username=object["Username"]
     servername=object["Servername"]
-    OldDetails=object["Details"]
     conn=sqlite3.connect("Health.db")
-    health_dict={'Health_id':[],'Epoch_Time':[],'Disk_Free':[],'Memory_Free':[],'CPU_Usage_Percent':[],'CPU_Time':[], "Bytes_Read":[]} 
+    # health_dict={'Health_id':[],'Epoch_Time':[],'bytes_write':[],'bytes_sent':[],'CPU_Usage_Percent':[],'CPU_Time':[], "Bytes_Read":[]} 
+    
     try:
-        details=OldDetails.replace(" ","").lower()
         cur=conn.cursor()
-        if details=='all':
-            cur.execute(f" select * from {username}_{servername} order by HEALTH_ID")
-        elif (details=='last10'):
-            cur.execute(f" select * from {username}_{servername} order by HEALTH_ID desc limit 10")
-        elif(details=='first10'):
-            cur.execute(f" select * from {username}_{servername} order by HEALTH_ID asc limit 10")
+        cur.execute(f" select * from {username}_{servername} order by HEALTH_ID")
+        health_list=[] 
         for row in cur:
-            health_dict['Health_id'].append(row[0])
-            health_dict['Epoch_Time'].append(row[1])
-            health_dict['Disk_Free'].append(row[2])
-            health_dict['Memory_Free'].append(row[3])
-            health_dict['CPU_Usage_Percent'].append(row[4])
-            health_dict['CPU_Time'].append(row[5]) 
-            health_dict["Bytes_Read"].append(row[6]) 
+               
+            tuple1=row[1:]
+            tuple2=('Epoch_Time','Bytes_Write','Bytes_Sent','Bytes_Recv','Bytes_Read')
+            health_dict=dict(zip(tuple2,tuple1))
+            health_list.append(health_dict)
     except Exception as e:
         return {"Error":str(e)}       
     finally:
@@ -69,9 +61,8 @@ def display():
             conn.commit()
         except:
             return "DB commit failed"
-    health=json.dumps(health_dict)
+    health=json.dumps(health_list)
     return health
-
 
 if __name__ ==("__main__"):
     print("Emitter flask server is running...")

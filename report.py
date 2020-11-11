@@ -20,27 +20,20 @@ def get_health():
     
     print('generating health report')
 
-    cpu_percent = psutil.cpu_percent(interval=2.0)
     
-    disk_usage = psutil.disk_usage("/")
-    freePercnt=((disk_usage.free/disk_usage.total)*100)
-    ctime = psutil.cpu_times()
     epochTime = time.time()
-    cpuTotal = (ctime.user + ctime.system)
-    virtualMemory = psutil.virtual_memory() 
-    memoryFree = (virtualMemory.free /virtualMemory.total)*100
-    bytesRead = psutil.disk_io_counters()   
+    bytesFromDisk = psutil.disk_io_counters()  
+    bytesFromNet = psutil.net_io_counters() 
 
     # The keys in this dict should match the db cols
     report = dict (
         USER_NAME=USER_NAME,
         SERVER_NAME=SERVER_NAME,
         epoch_time = round(epochTime,2),
-        cpupercent = cpu_percent,
-        cpu_total = round(cpuTotal,2),
-        free_Percnt = round(freePercnt,2),
-        memory_Free = round(memoryFree,2),
-        bytes_read = bytesRead.read_bytes
+        bytes_read = bytesFromDisk.read_bytes,
+        bytes_write = bytesFromDisk.write_bytes,
+        bytes_sent = bytesFromNet.bytes_sent,
+        bytes_recv = bytesFromNet.bytes_recv,
         )
 
     return report
