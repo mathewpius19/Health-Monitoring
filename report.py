@@ -30,10 +30,10 @@ def get_health():
         USER_NAME=USER_NAME,
         SERVER_NAME=SERVER_NAME,
         epoch_time = round(epochTime,2),
-        bytes_read = bytesFromDisk.read_bytes,
-        bytes_write = bytesFromDisk.write_bytes,
-        bytes_sent = bytesFromNet.bytes_sent,
-        bytes_recv = bytesFromNet.bytes_recv,
+        bytes_read = (bytesFromDisk.read_bytes)/(1000^2),
+        bytes_write = (bytesFromDisk.write_bytes)/(1000^2),
+        bytes_sent = (bytesFromNet.bytes_sent)/(1000^2),
+        bytes_recv = (bytesFromNet.bytes_recv)/(1000^2),
         )
 
     return report
