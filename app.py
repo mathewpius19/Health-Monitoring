@@ -82,7 +82,6 @@ def display():
 
 def prediction(un, sn, conn):
     sq = (f"SELECT * FROM {un}_{sn} ORDER BY HEALTH_ID ASC")
-    health_list = []
     health_dict={'Epoch_Time':[], "Bytes_Read":[], "Bytes_Write" : [], "Bytes_Sent" : [], "Bytes_Recv" : [], "P_Read": [], "P_Write": [], "P_Sent": [], "P_Recv": []} 
     df = pd.read_sql_query(sq,conn)
     X = df[['Time_Epoch']]
@@ -120,8 +119,7 @@ def prediction(un, sn, conn):
         health_dict["Bytes_Write"].append((row[1]).item())
         health_dict["Bytes_Sent"].append((row[2]).item())
         health_dict["Bytes_Recv"].append((row[3]).item())
-    new_data = [dict(zip(health_dict.keys(), i)) for i in zip(*health_dict.values())]
-    return new_data
+    return health_dict
 
 
 
