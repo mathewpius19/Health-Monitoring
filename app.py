@@ -11,6 +11,7 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.layers import Dense, LSTM
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+import tensorflow as tf
 
 PORT=4400
 URL='http://localhost:5555/health/gethealthdata'
@@ -94,7 +95,9 @@ def prediction(un, sn, conn):
     model = Sequential()
     model.add(LSTM(64, input_shape=in_dim, activation="relu", dropout= 0.2))
     model.add(Dense(out_dim))
-    model.compile(loss="mse", optimizer="adam") 
+    opt = tf.optimizers.Adam(learning_rate = 0.01, clipnorm = 1.0)
+
+    model.compile(loss="mse", optimizer=opt) 
     
     model.fit(xtrain, ytrain, batch_size=4, epochs=100, verbose=0)
   
@@ -117,8 +120,8 @@ def prediction(un, sn, conn):
         health_dict["Bytes_Write"].append((row[1]).item())
         health_dict["Bytes_Sent"].append((row[2]).item())
         health_dict["Bytes_Recv"].append((row[3]).item())
-    health_list.append(health_dict)
-    return health_list
+    new_data = [dict(zip(health_dict.keys(), i)) for i in zip(*health_dict.values())]
+    return new_data
 
 
 
