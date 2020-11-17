@@ -17,7 +17,7 @@ io.on("connection",client=>{
         setInterval(()=>{
             let usage;
             utils.cpuUsage(value=>{
-                usage=`CPU Usage: ${(value*100).toFixed(2)}%`;
+                usage=`${(value*100).toFixed(2)}%`;
                 const ut = os.uptime();
                 const data = {
                     uptime:`${ut} second(s) [ ${parseInt((ut/60)/60)} hour(s) and ${parseInt((((ut/60)/60).toFixed(2)-parseInt((ut/60)/60))*59)} minute(s) ⏳ ]`,
