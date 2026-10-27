@@ -1,7 +1,0 @@
-flask
-psutil
-pandas
-numpy
-scikit-learn
-tensorflow
-requests
